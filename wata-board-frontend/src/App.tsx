@@ -15,9 +15,12 @@ import { useConnectivity } from './hooks/useConnectivity';
 import { useOfflineApi, handleOfflineError, getOfflineErrorMessage } from './utils/offlineApi';
 import { getCurrentNetworkConfig } from './utils/network-config';
 import { announceToScreenReader, generateId, getAriaLabel, setupKeyboardNavigation, setupFocusVisible } from './utils/accessibility';
+import { SchedulingService } from './services/schedulingService';
+import { NotificationService } from './services/notificationService';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Rate from './pages/Rate';
+import ScheduledPayments from './pages/ScheduledPayments';
 
 // Set up accessibility features on app load
 useEffect(() => {
@@ -42,6 +45,7 @@ function Navigation() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-4 text-sm" role="menubar">
               <Link to="/" className={`transition px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isActive('/')}`} aria-current={location.pathname === '/' ? 'page' : undefined} role="menuitem">Pay Bill</Link>
+              <Link to="/scheduled" className={`transition px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isActive('/scheduled')}`} aria-current={location.pathname === '/scheduled' ? 'page' : undefined} role="menuitem">Scheduled</Link>
               <Link to="/about" className={`transition px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isActive('/about')}`} aria-current={location.pathname === '/about' ? 'page' : undefined} role="menuitem">About</Link>
               <Link to="/contact" className={`transition px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isActive('/contact')}`} aria-current={location.pathname === '/contact' ? 'page' : undefined} role="menuitem">Contact</Link>
               <Link to="/rate" className={`transition px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isActive('/rate')}`} aria-current={location.pathname === '/rate' ? 'page' : undefined} role="menuitem">Rate Us</Link>
@@ -388,7 +392,32 @@ function Home() {
 }
 
 function App() {
+  // Initialize scheduling and notification services
+  useEffect(() => {
+    const schedulingService = SchedulingService.getInstance();
+    const notificationService = NotificationService.getInstance();
+
+    // Process scheduled payments every minute
+    const interval = setInterval(() => {
+      schedulingService.processScheduledPayments();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
+<<<<<<< HEAD
+    <Router>
+      <ResponsiveNavigation />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/scheduled" element={<ScheduledPayments />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/rate" element={<Rate />} />
+      </Routes>
+    </Router>
+=======
     <OfflineErrorBoundary>
       <Router>
         <ResponsiveNavigation />
@@ -400,6 +429,7 @@ function App() {
         </Routes>
       </Router>
     </OfflineErrorBoundary>
+>>>>>>> 79beabad76220a266b8bdad29722f20bc330bf53
   );
 }
 
